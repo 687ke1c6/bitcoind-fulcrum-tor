@@ -1,0 +1,34 @@
+services:
+  fulcrum:
+    image: "samouraiwallet/dojo-fulcrum:${DOJO_FULCRUM_VERSION_TAG}"
+    container_name: fulcrum
+    build:
+      context: ./fulcrum
+      args:
+        FULCRUM_LINUX_UID: ${FULCRUM_LINUX_UID}
+        FULCRUM_LINUX_GID: ${FULCRUM_LINUX_GID}
+    env_file:
+      - ./.env
+      - ./conf/docker-common.conf
+      - ./conf/docker-bitcoind.conf
+      - ./conf/docker-indexer.conf
+    restart: unless-stopped
+    command: /restart.sh
+    #command: tail -f /dev/null
+    volumes:
+      #- /mnt/pi4lite2-ssd1tb/fulcrum:/home/fulcrum
+      # - /media/ext/ssd1tb/fulcrum:/home/fulcrum
+      - /home/brad/fulcrum:/home/fulcrum
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
+    stop_grace_period: 1m
+    depends_on:
+      - tor
+#      - node
+    networks:
+      dojonet:
+        ipv4_address: ${NET_DOJO_INDEXER_IPV4}
+

@@ -1,0 +1,43 @@
+services:
+  bitcoind:
+    image: "samouraiwallet/dojo-bitcoind:${DOJO_BITCOIND_VERSION_TAG}"
+    container_name: bitcoind
+    build:
+      context: ./bitcoin
+      args:
+        BITCOIND_LINUX_UID: ${BITCOIND_LINUX_UID}
+        BITCOIND_LINUX_GID: ${BITCOIND_LINUX_GID}
+        TOR_LINUX_GID: ${TOR_LINUX_GID}
+    env_file:
+      - ./.env
+      - ./conf/docker-common.conf
+      - ./conf/docker-bitcoind.conf
+      - ./conf/docker-tor.conf
+    restart: "unless-stopped"
+    command: /restart.sh
+#    command: tail -f /dev/null
+    expose:
+      - "8333"
+      - "28256"
+      - "9501"
+      - "9502"
+    volumes:
+      # - /media/ext/ssd1tb/bitcoin2/data:/home/bitcoin/.bitcoin
+      - /mnt/pi4lite2-ssd1tb/bitcoin2/data:/home/bitcoin/.bitcoin
+      - data-tor:/var/lib/tor
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
+    depends_on:
+      - tor
+    stop_grace_period: 1m
+    networks:
+      dojonet:
+        ipv4_address: ${NET_DOJO_BITCOIND_IPV4}
+
+  # node:
+  #   depends_on:
+  #     - bitcoind
+

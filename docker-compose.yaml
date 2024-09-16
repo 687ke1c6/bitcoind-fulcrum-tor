@@ -1,0 +1,54 @@
+services:
+  tor:
+    image: "samouraiwallet/dojo-tor:${DOJO_TOR_VERSION_TAG}"
+    container_name: tor
+    build:
+      context: ./tor
+      args:
+        TOR_LINUX_UID: ${TOR_LINUX_UID}
+        TOR_LINUX_GID: ${TOR_LINUX_GID}
+    env_file:
+      - ./.env
+      - ./conf/docker-bitcoind.conf
+      - ./conf/docker-explorer.conf
+      - ./conf/docker-whirlpool.conf
+      - ./conf/docker-indexer.conf
+      - ./conf/docker-tor.conf
+    restart: unless-stopped
+    command: /restart.sh
+    volumes:
+      - data-tor:/var/lib/tor
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
+    networks:
+      dmznet:
+        ipv4_address: ${NET_DMZ_TOR_IPV4}
+      dojonet:
+        ipv4_address: ${NET_DOJO_TOR_IPV4}
+
+networks:
+  dojonet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+  dmznet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.29.0.0/16
+  whirlnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16
+
+volumes:
+  data-mysql:
+  data-tor:
