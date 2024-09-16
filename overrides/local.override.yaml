@@ -1,0 +1,12 @@
+services:
+  bitcoind:
+    # command: tail -f /dev/null
+    volumes:
+      # - /media/ext/ssd1tb/bitcoin2/data:/home/bitcoin/.bitcoin
+      - /media/ext/ssd2tb/bitcoin2/data:/home/bitcoin/.bitcoin
+      # - /mnt/pi4lite2-ssd1tb/bitcoin2/data:/home/bitcoin/.bitcoin
+      # - /media/ext/ssd1tb/bitcoin2/data:/home/bitcoin/.bitcoin
+  electrs:
+    # command: sleep infinity
+    volumes:
+      - /home/brad/electrs:/home/electrs

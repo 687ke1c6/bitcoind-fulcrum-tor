@@ -1,0 +1,30 @@
+services:
+  electrs:
+    image: "bitcoin-node/electrs:${DOJO_ELECTRS_VERSION_TAG:-0.0.1}"
+    container_name: electrs
+    build:
+      context: ./electrs
+      args:
+        ELECTRS_LINUX_UID: ${ELECTRS_LINUX_UID:-1000}
+        ELECTRS_LINUX_GID: ${ELECTRS_LINUX_GID:-1000}
+    env_file:
+      - ./.env
+      - ./conf/docker-common.conf
+      - ./conf/docker-bitcoind.conf
+      - ./conf/docker-indexer.conf
+    restart: unless-stopped
+    command: /restart.sh
+    volumes:
+      - data-electrs:/home/electrs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
+    stop_grace_period: 1m
+    depends_on:
+      - tor
+    networks:
+      dojonet:
+        ipv4_address: ${NET_DOJO_INDEXER_IPV4}
+
