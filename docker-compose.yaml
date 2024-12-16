@@ -1,6 +1,6 @@
 services:
   tor:
-    image: "samouraiwallet/dojo-tor:${DOJO_TOR_VERSION_TAG}"
+    image: "bitcoin-node/tor:${DOJO_TOR_VERSION_TAG}"
     container_name: tor
     build:
       context: ./tor
@@ -11,7 +11,6 @@ services:
       - ./.env
       - ./conf/docker-bitcoind.conf
       - ./conf/docker-explorer.conf
-      - ./conf/docker-whirlpool.conf
       - ./conf/docker-indexer.conf
       - ./conf/docker-tor.conf
     restart: unless-stopped
@@ -52,3 +51,5 @@ networks:
 volumes:
   data-mysql:
   data-tor:
+  data-bitcoin:
+  data-fulcrum:

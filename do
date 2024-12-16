@@ -25,14 +25,8 @@ source_file() {
 }
 
 # Source config files
-#source_file "$DIR/conf/docker-whirlpool.conf"
 source_file "$DIR/conf/docker-indexer.conf"
 source_file "$DIR/conf/docker-bitcoind.conf"
-#source_file "$DIR/conf/docker-explorer.conf"
-#source_file "$DIR/conf/docker-common.conf"
-#source_file "$DIR/conf/docker-tor.conf"
-#source_file "$DIR/conf/docker-jam.conf"
-#source_file "$DIR/conf/docker-lnd.conf"
 source_file "$DIR/.env"
 
 # Export some variables for compose
@@ -43,39 +37,30 @@ select_yaml_files() {
   yamlFiles="-f $DIR/docker-compose.yaml"
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
-    yamlFiles="$yamlFiles -f $DIR/overrides/bitcoind.install.yaml"
+    yamlFiles="$yamlFiles -f $DIR/services/bitcoind.install.yaml"
 
     if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
-      yamlFiles="$yamlFiles -f $DIR/overrides/bitcoind.rpc.expose.yaml"
+      yamlFiles="$yamlFiles -f $DIR/services/bitcoind.rpc.expose.yaml"
     fi
   fi
-  # if [ "$LND_INSTALL" == "on" ]; then
-  #   yamlFiles="$yamlFiles -f $DIR/overrides/lnd.install.yaml"
-  # fi
-
-  # if [ "$EXPLORER_INSTALL" == "on" ]; then
-  #   yamlFiles="$yamlFiles -f $DIR/overrides/explorer.install.yaml"
-  # fi
 
   if [ "$INDEXER_INSTALL" == "on" ]; then
     # if [ "$INDEXER_TYPE" == "addrindexrs" ]; then
-    #   yamlFiles="$yamlFiles -f $DIR/overrides/indexer.install.yaml"
+    #   yamlFiles="$yamlFiles -f $DIR/services/indexer.install.yaml"
     # elif [ "$INDEXER_TYPE" == "fulcrum" ]; then
-      yamlFiles="$yamlFiles -f $DIR/overrides/fulcrum.install.yaml"
+      yamlFiles="$yamlFiles -f $DIR/services/fulcrum.install.yaml"
 
       if [ "$INDEXER_EXTERNAL" == "on" ]; then
-        yamlFiles="$yamlFiles -f $DIR/overrides/fulcrum.port.expose.yaml"
+        yamlFiles="$yamlFiles -f $DIR/services/fulcrum.port.expose.yaml"
       fi
     # fi
   fi
 
-  # if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
-  #   yamlFiles="$yamlFiles -f $DIR/overrides/whirlpool.install.yaml"
-  # fi
-
-  # if [ "$JAM_INSTALL" == "on" ]; then
-  #   yamlFiles="$yamlFiles -f $DIR/overrides/jam.install.yaml"
-  # fi
+  if [ -e "$DIR/overrides" ]; then
+    for o in "$DIR/overrides/*"; do
+      yamlFiles="$yamlFiles -f $o"
+    done
+  fi
 
   # Return yamlFiles
   echo "$yamlFiles"
@@ -133,84 +118,21 @@ restart() {
 # Install
 install() {
   source "$DIR/install/install-scripts.sh"
-
-  launchInstall=1
-  auto=1
-  noLog=1
-
-  # Extract install options from arguments
-  if [ $# -gt 0 ]; then
-    for option in "$@"
-    do
-      case "$option" in
-        --auto )    auto=0 ;;
-        --nolog )   noLog=0 ;;
-        * )         break ;;
-      esac
-    done
-  fi
-
-  # Confirmation
-  if [ $auto -eq 0 ]; then
-    launchInstall=0
-  else
-    get_confirmation
-    launchInstall=$?
-  fi
-
-  # Detection of past install
-  if [ $launchInstall -eq 0 ]; then
-    pastInstallsfound=$(docker image ls | grep samouraiwallet/dojo-db | wc -l)
-    if [ $pastInstallsfound -ne 0 ]; then
-      # Past installation found. Ask confirmation for reinstall
-      echo -e "\nWarning: Found traces of a previous installation of Dojo on this machine."
-      echo "A new installation requires to remove these elements first."
-      if [ $auto -eq 0 ]; then
-        launchReinstall=0
-      else
-        get_confirmation_reinstall
-        launchReinstall=$?
-      fi
-
-      if [ $launchReinstall -eq 0 ]; then
-        echo ""
-        # Uninstall
-        if [ $auto -eq 0 ]; then
-          uninstall --auto
-          launchReinstall=$?
-        else
-          uninstall
-          launchReinstall=$?
-        fi
-      fi
-
-      if [ $launchReinstall -eq 1 ]; then
-        launchInstall=1
-        echo -e "\nInstallation was cancelled."
-      fi
-    fi
-  fi
-
-  # Installation
-  if [ $launchInstall -eq 0 ]; then
-    # Initialize the config files
-    init_config_files
-    # Build and start Dojo
-    docker_build --no-cache
-    docker_up --remove-orphans
-    buildResult=$?
-    if [ $buildResult -eq 0 ]; then
-      # Display the logs
-      if [ $noLog -eq 1 ]; then
-        logs "" 0
-      fi
-    else
-      # Return an error
-      echo -e "\nInstallation of Dojo failed. See the above error message."
-      exit $buildResult
+  # Initialize the config files
+  init_config_files
+  # Build and start Dojo
+  docker_build --no-cache
+  docker_up --remove-orphans
+  buildResult=$?
+  if [ $buildResult -eq 0 ]; then
+    # Display the logs
+    if [ $noLog -eq 1 ]; then
+      logs "" 0
     fi
   else
-    exit 1
+    # Return an error
+    echo -e "\nInstallation of Dojo failed. See the above error message."
+    exit $buildResult
   fi
 }
 

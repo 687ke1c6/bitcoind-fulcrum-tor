@@ -1,6 +1,6 @@
 services:
   bitcoind:
-    image: "samouraiwallet/dojo-bitcoind:${DOJO_BITCOIND_VERSION_TAG}"
+    image: "bitcoin-node/bitcoind:${DOJO_BITCOIND_VERSION_TAG}"
     container_name: bitcoind
     build:
       context: ./bitcoin
@@ -15,7 +15,6 @@ services:
       - ./conf/docker-tor.conf
     restart: "unless-stopped"
     command: /restart.sh
-#    command: tail -f /dev/null
     expose:
       - "8333"
       - "28256"
@@ -23,8 +22,9 @@ services:
       - "9502"
     volumes:
       # - /media/ext/ssd1tb/bitcoin2/data:/home/bitcoin/.bitcoin
-      - /mnt/pi4lite2-ssd1tb/bitcoin2/data:/home/bitcoin/.bitcoin
+      # - /mnt/pi4lite2-ssd1tb/bitcoin2/data:/home/bitcoin/.bitcoin
       - data-tor:/var/lib/tor
+      - data-bitcoin:/home/bitcoin/.bitcoin
     logging:
       driver: "json-file"
       options:
@@ -36,8 +36,3 @@ services:
     networks:
       dojonet:
         ipv4_address: ${NET_DOJO_BITCOIND_IPV4}
-
-  # node:
-  #   depends_on:
-  #     - bitcoind
-

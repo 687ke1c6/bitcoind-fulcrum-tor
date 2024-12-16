@@ -1,0 +1,7 @@
+services:
+  bitcoind:
+    # command: tail -f /dev/null
+    volumes:
+      - /home/.bitcoin:/home/bitcoin/.bitcoin
+  fulcrum:
+    # command: tail -f /dev/null
