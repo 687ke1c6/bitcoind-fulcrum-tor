@@ -8,7 +8,7 @@ chmod 750 /var/lib/tor
 echo "## Start tor #############################"
 
 tor_options=(
-  --SocksPort "$NET_DOJO_TOR_IPV4:$TOR_SOCKS_PORT"
+  --SocksPort "$NET_TOR_IPV4:$TOR_SOCKS_PORT"
   --SocksPolicy "accept 172.28.0.0/16"
   --SocksPolicy "reject *"
   --DataDirectory /var/lib/tor/.tor
@@ -21,7 +21,7 @@ if [ "$BITCOIND_INSTALL" == "on" ]; then
   if [ "$BITCOIND_LISTEN_MODE" == "on" ]; then
     tor_options+=(--HiddenServiceDir /var/lib/tor/hsv3bitcoind)
     tor_options+=(--HiddenServiceVersion 3)
-    tor_options+=(--HiddenServicePort "8333 $NET_DOJO_BITCOIND_IPV4:8333")
+    tor_options+=(--HiddenServicePort "8333 $NET_BITCOIND_IPV4:8333")
     tor_options+=(--HiddenServiceDirGroupReadable 1)
   fi
 fi
@@ -38,7 +38,7 @@ if [ "$INDEXER_INSTALL" == "on" ]; then
   if [ "$INDEXER_TYPE" == "fulcrum" ] || [ "$INDEXER_TYPE" == "electrs" ]; then
     tor_options+=(--HiddenServiceDir /var/lib/tor/hsv3$INDEXER_TYPE)
     tor_options+=(--HiddenServiceVersion 3)
-    tor_options+=(--HiddenServicePort "50001 $NET_DOJO_INDEXER_IPV4:50001")
+    tor_options+=(--HiddenServicePort "50001 $NET_INDEXER_IPV4:50001")
     tor_options+=(--HiddenServiceDirGroupReadable 1)
   fi
 fi

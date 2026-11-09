@@ -20,11 +20,11 @@ FROM    debian:bookworm-slim
 
 ENV     INDEXER_HOME=/home/electrs
 
-ARG     ELECTRS_LINUX_GID=1000
-ARG     ELECTRS_LINUX_UID=1000
+ARG     INDEXER_LINUX_GID
+ARG     INDEXER_LINUX_UID
 
-RUN     groupadd -r -g ${ELECTRS_LINUX_GID} electrs && \
-        useradd -r -g electrs -u ${ELECTRS_LINUX_UID} -d "$INDEXER_HOME" electrs
+RUN     groupadd -r -g ${INDEXER_LINUX_GID} electrs && \
+        useradd -r -g electrs -u ${INDEXER_LINUX_UID} -d "$INDEXER_HOME" electrs
 
 # Create data directory
 RUN     mkdir -p "$INDEXER_HOME/db" && \

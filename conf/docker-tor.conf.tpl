@@ -36,3 +36,13 @@ TOR_BRIDGE_2=ToBeDefined
 
 # Bridge 3
 TOR_BRIDGE_3=ToBeDefined
+
+#
+# SYSTEM SETTINGS
+# Do not modify after the first install
+#
+
+TOR_VERSION_TAG=1.17.0
+
+TOR_LINUX_UID=1104
+TOR_LINUX_GID=1107

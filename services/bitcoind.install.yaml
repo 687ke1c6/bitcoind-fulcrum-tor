@@ -1,6 +1,6 @@
 services:
   bitcoind:
-    image: "bitcoin-node/bitcoind:${DOJO_BITCOIND_VERSION_TAG}"
+    image: "bitcoin-node/bitcoind:${BITCOIND_VERSION_TAG}"
     container_name: bitcoind
     build:
       context: ./bitcoin
@@ -9,7 +9,6 @@ services:
         BITCOIND_LINUX_GID: ${BITCOIND_LINUX_GID}
         TOR_LINUX_GID: ${TOR_LINUX_GID}
     env_file:
-      - ./.env
       - ./conf/docker-common.conf
       - ./conf/docker-bitcoind.conf
       - ./conf/docker-tor.conf
@@ -33,4 +32,4 @@ services:
     stop_grace_period: 1m
     networks:
       dojonet:
-        ipv4_address: ${NET_DOJO_BITCOIND_IPV4}
+        ipv4_address: ${NET_BITCOIND_IPV4}

@@ -132,3 +132,16 @@ BITCOIND_CRON_JOBS=on
 # This parameter is inactive if BITCOIND_INSTALL is set to 'off'
 # Type: integer
 BITCOIND_SHUTDOWN_DELAY=180
+
+#
+# SYSTEM SETTINGS
+# Do not modify after the first install
+#
+
+BITCOIND_VERSION_TAG=1.21.0
+
+BITCOIND_LINUX_UID=1105
+BITCOIND_LINUX_GID=1108
+
+BITCOIND_DNSSEED=0
+BITCOIND_DNS=0

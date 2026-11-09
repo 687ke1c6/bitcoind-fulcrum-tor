@@ -23,9 +23,13 @@ source_file() {
 }
 
 # Source config files
-source_file "$DIR/conf/docker-indexer.conf"
+# Everything is exported so docker compose can interpolate ${VARS} in the yaml files
+set -a
+source_file "$DIR/conf/docker-common.conf"
 source_file "$DIR/conf/docker-bitcoind.conf"
-source_file "$DIR/.env"
+source_file "$DIR/conf/docker-indexer.conf"
+source_file "$DIR/conf/docker-tor.conf"
+set +a
 
 # Validate indexer selection
 if [ "$INDEXER_INSTALL" == "on" ]; then
@@ -34,9 +38,6 @@ if [ "$INDEXER_INSTALL" == "on" ]; then
     * ) echo "Unsupported INDEXER_TYPE '$INDEXER_TYPE' (expected: fulcrum | electrs)" >&2; exit 1 ;;
   esac
 fi
-
-# Export some variables for compose
-export BITCOIND_RPC_EXTERNAL_IP INDEXER_EXTERNAL_IP TOR_SOCKS_PORT
 
 # Select YAML files
 select_yaml_files() {
@@ -54,9 +55,6 @@ select_yaml_files() {
     case "$INDEXER_TYPE" in
       fulcrum|electrs )
         yamlFiles="$yamlFiles -f $DIR/services/$INDEXER_TYPE.install.yaml"
-        if [ "$INDEXER_EXTERNAL" == "on" ]; then
-          yamlFiles="$yamlFiles -f $DIR/services/$INDEXER_TYPE.port.expose.yaml"
-        fi
         ;;
     esac
   fi

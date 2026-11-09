@@ -1,14 +1,13 @@
 services:
   fulcrum:
-    image: "bitcoin-node/fulcrum:${DOJO_FULCRUM_VERSION_TAG}"
+    image: "bitcoin-node/fulcrum:${FULCRUM_VERSION_TAG}"
     container_name: fulcrum
     build:
       context: ./fulcrum
       args:
-        FULCRUM_LINUX_UID: ${FULCRUM_LINUX_UID}
-        FULCRUM_LINUX_GID: ${FULCRUM_LINUX_GID}
+        INDEXER_LINUX_UID: ${INDEXER_LINUX_UID}
+        INDEXER_LINUX_GID: ${INDEXER_LINUX_GID}
     env_file:
-      - ./.env
       - ./conf/docker-common.conf
       - ./conf/docker-bitcoind.conf
       - ./conf/docker-indexer.conf
@@ -26,5 +25,7 @@ services:
       - tor
     networks:
       dojonet:
-        ipv4_address: ${NET_DOJO_INDEXER_IPV4}
+        ipv4_address: ${NET_INDEXER_IPV4}
 
+volumes:
+  data-fulcrum:

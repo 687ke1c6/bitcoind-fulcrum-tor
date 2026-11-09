@@ -1,12 +1,12 @@
 FROM    debian:trixie-slim AS builder
 
-ENV     INDEXER_VERSION       2.1.0
-ENV     INDEXER_SHASUMS       Fulcrum-${INDEXER_VERSION}-shasums.txt
-ENV     INDEXER_ASC           ${INDEXER_SHASUMS}.asc
-ENV     INDEXER_URL           https://github.com/cculianu/Fulcrum/releases/download
-ENV     INDEXER_BUILD_AMD64   x86_64-linux
-ENV     INDEXER_BUILD_ARM64   arm64-linux
-ENV     INDEXER_FILES         /usr/fulcrum
+ENV     INDEXER_VERSION=2.1.0
+ENV     INDEXER_SHASUMS=Fulcrum-${INDEXER_VERSION}-shasums.txt
+ENV     INDEXER_ASC=${INDEXER_SHASUMS}.asc
+ENV     INDEXER_URL=https://github.com/cculianu/Fulcrum/releases/download
+ENV     INDEXER_BUILD_AMD64=x86_64-linux
+ENV     INDEXER_BUILD_ARM64=arm64-linux
+ENV     INDEXER_FILES=/usr/fulcrum
 
 RUN     apt-get update && \
         apt-get install -y wget curl gpg gpg-agent
@@ -36,13 +36,13 @@ RUN     set -ex && \
 
 FROM    debian:trixie-slim
 
-ENV     INDEXER_FILES         /usr/fulcrum
-ENV     INDEXER_HOME          /home/fulcrum
-ENV     SSL_CERTFILE          ${INDEXER_HOME}/fulcrum.crt
-ENV     SSL_KEYFILE           ${INDEXER_HOME}/fulcrum.key
+ENV     INDEXER_FILES=/usr/fulcrum
+ENV     INDEXER_HOME=/home/fulcrum
+ENV     SSL_CERTFILE=${INDEXER_HOME}/fulcrum.crt
+ENV     SSL_KEYFILE=${INDEXER_HOME}/fulcrum.key
 
-ARG     FULCRUM_LINUX_GID
-ARG     FULCRUM_LINUX_UID
+ARG     INDEXER_LINUX_GID
+ARG     INDEXER_LINUX_UID
 
 RUN     apt-get update && \
         apt-get install -y openssl && \
@@ -50,11 +50,11 @@ RUN     apt-get update && \
         rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Create group and user indexer
-# RUN     addgroup --system -gid ${FULCRUM_LINUX_GID} fulcrum && \
-#         adduser --system --ingroup fulcrum -uid ${FULCRUM_LINUX_UID} fulcrum
+# RUN     addgroup --system -gid ${INDEXER_LINUX_GID} fulcrum && \
+#         adduser --system --ingroup fulcrum -uid ${INDEXER_LINUX_UID} fulcrum
 
-RUN     groupadd -r -g ${FULCRUM_LINUX_GID} fulcrum && \
-        useradd -r -g fulcrum -u ${FULCRUM_LINUX_UID} fulcrum
+RUN     groupadd -r -g ${INDEXER_LINUX_GID} fulcrum && \
+        useradd -r -g fulcrum -u ${INDEXER_LINUX_UID} fulcrum
 
 # Create data directory
 RUN     mkdir -p "$INDEXER_HOME/.fulcrum/db" && \

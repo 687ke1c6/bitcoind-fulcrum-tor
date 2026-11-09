@@ -14,19 +14,14 @@ INDEXER_INSTALL=on
 # Value: fulcrum | electrs
 INDEXER_TYPE=fulcrum
 
-# Expose the electrum API to external apps
-# Has effect only if INDEXER_TYPE=fulcrum or electrs
-# Warning: Do not expose your electrum API to internet!
-# See INDEXER_EXTERNAL_IP
-# Value: on | off
-INDEXER_EXTERNAL=off
+#
+# SYSTEM SETTINGS
+# Do not modify after the first install
+#
 
-# IP address used to expose the electrum API to external apps
-# This parameter is inactive if INDEXER_EXTERNAL isn't set to 'on'
-# Warning: Do not expose your RPC API to internet!
-# Recommended value:
-#   linux: 127.0.0.1
-#   macos or windows: IP address of the VM running the docker host
-# Type: string
-INDEXER_EXTERNAL_IP=127.0.0.1
+FULCRUM_VERSION_TAG=1.11.1
+ELECTRS_VERSION_TAG=0.0.1
 
+# Shared by fulcrum and electrs
+INDEXER_LINUX_UID=1133
+INDEXER_LINUX_GID=1136
