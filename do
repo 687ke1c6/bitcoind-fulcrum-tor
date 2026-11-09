@@ -25,10 +25,10 @@ source_file() {
 # Source config files
 # Everything is exported so docker compose can interpolate ${VARS} in the yaml files
 set -a
-source_file "$DIR/conf/docker-common.conf"
-source_file "$DIR/conf/docker-bitcoind.conf"
-source_file "$DIR/conf/docker-indexer.conf"
-source_file "$DIR/conf/docker-tor.conf"
+source_file "$DIR/conf/common.conf"
+source_file "$DIR/conf/bitcoind.conf"
+source_file "$DIR/conf/indexer.conf"
+source_file "$DIR/conf/tor.conf"
 set +a
 
 # Validate indexer selection

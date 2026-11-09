@@ -8,10 +8,10 @@ services:
         TOR_LINUX_UID: ${TOR_LINUX_UID}
         TOR_LINUX_GID: ${TOR_LINUX_GID}
     env_file:
-      - ./conf/docker-common.conf
-      - ./conf/docker-bitcoind.conf
-      - ./conf/docker-indexer.conf
-      - ./conf/docker-tor.conf
+      - ./conf/common.conf
+      - ./conf/bitcoind.conf
+      - ./conf/indexer.conf
+      - ./conf/tor.conf
     restart: unless-stopped
     command: /restart.sh
     volumes:

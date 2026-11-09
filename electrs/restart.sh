@@ -15,7 +15,7 @@ fi
 # electrs only accepts 'auth' from a config file (not CLI/env), otherwise it
 # falls back to bitcoind's cookie file. Write a private config at startup.
 if [ -z "$BITCOIND_RPC_USER" ] || [ -z "$BITCOIND_RPC_PASSWORD" ]; then
-  echo "ERROR: BITCOIND_RPC_USER / BITCOIND_RPC_PASSWORD not set (is conf/docker-bitcoind.conf in env_file?)" >&2
+  echo "ERROR: BITCOIND_RPC_USER / BITCOIND_RPC_PASSWORD not set (is conf/bitcoind.conf in env_file?)" >&2
   exit 1
 fi
 

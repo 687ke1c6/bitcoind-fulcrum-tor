@@ -8,9 +8,9 @@ services:
         INDEXER_LINUX_UID: ${INDEXER_LINUX_UID}
         INDEXER_LINUX_GID: ${INDEXER_LINUX_GID}
     env_file:
-      - ./conf/docker-common.conf
-      - ./conf/docker-bitcoind.conf
-      - ./conf/docker-indexer.conf
+      - ./conf/common.conf
+      - ./conf/bitcoind.conf
+      - ./conf/indexer.conf
     restart: unless-stopped
     command: /restart.sh
     volumes:
